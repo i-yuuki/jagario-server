@@ -13,5 +13,6 @@ private:
   GameServer();
 private:
   SOCKET socket = NULL;
+  unsigned short port = 20250;
   int maxPlayers = 100;
 };
