@@ -49,6 +49,8 @@ void GameServer::tick(){
         unsigned int playerId = generatePlayerId();
         Player player{};
         // TODO 位置とか
+        player.posX = rand() % 200;
+        player.posY = rand() % 200;
         player.address = senderAddr;
         strcpy_s(player.name, sizeof(player.name), packet.name);
         players.insert({playerId, player});
