@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="packet.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="server.h" />
     <ClInclude Include="winsock-error.h" />
   </ItemGroup>

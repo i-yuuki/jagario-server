@@ -1,6 +1,6 @@
 #pragma once
 
-constexpr size_t MAX_NAME_LENGTH = 32;
+constexpr size_t MAX_NAME_LENGTH = 64;
 constexpr int PROTOCOL_VERSION = 1;
 
 // 想定される送信元を名前の最初につけてるよ
@@ -14,7 +14,7 @@ enum class PacketType : short{
 struct PacketClientJoin{
   PacketType type = PacketType::C_JOIN;
   int version;
-  wchar_t name[MAX_NAME_LENGTH];
+  char name[MAX_NAME_LENGTH];
 };
 
 struct PacketClientLeave{

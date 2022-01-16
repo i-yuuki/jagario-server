@@ -1,5 +1,7 @@
 #include "server.h"
 
+#include <random>
+
 #include "packet.h"
 #include "winsock-error.h"
 
@@ -43,14 +45,25 @@ void GameServer::tick(){
       case PacketType::C_JOIN:
       {
         PacketClientJoin& packet = *reinterpret_cast<PacketClientJoin*>(packetBuffer);
-        MessageBoxW(NULL, packet.name, L"C_JOIN received", MB_ICONINFORMATION);
+
+        unsigned int playerId = generatePlayerId();
+        Player player{};
+        // TODO 位置とか
+        player.address = senderAddr;
+        strcpy_s(player.name, sizeof(player.name), packet.name);
+        players.insert({playerId, player});
+        
         PacketServerJoin response{};
-        response.playerId = rand();
+        response.playerId = playerId;
         sendto(socket, reinterpret_cast<char*>(&response), sizeof(response), 0, reinterpret_cast<sockaddr*>(&senderAddr), senderAddrLen);
       }
         break;
       case PacketType::C_LEAVE:
-        MessageBoxW(NULL, L"C_LEAVE received!", L"server", MB_ICONINFORMATION);
+      {
+        PacketClientLeave& packet = *reinterpret_cast<PacketClientLeave*>(packetBuffer);
+        // TODO プレイヤーに通知
+        players.erase(packet.playerId);
+      }
         break;
     }
   }
@@ -60,4 +73,12 @@ void GameServer::uninit(){
   closesocket(socket);
 
   WSACleanup();
+}
+
+unsigned int GameServer::generatePlayerId(){
+  std::mt19937 rand;
+  while(true){
+    unsigned int id = rand();
+    if(players.find(id) == players.end()) return id;
+  }
 }
