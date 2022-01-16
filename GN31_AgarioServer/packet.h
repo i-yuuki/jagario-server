@@ -19,10 +19,10 @@ struct PacketClientJoin{
 
 struct PacketClientLeave{
   PacketType type = PacketType::C_LEAVE;
-  int playerId;
+  unsigned int playerId;
 };
 
 struct PacketServerJoin{
   PacketType type = PacketType::S_JOIN;
-  int playerId;
+  unsigned int playerId;
 };
