@@ -9,7 +9,7 @@ struct Player{
   float posX;
   float posY;
   float direction;
-  float size;
+  int size;
   sockaddr_in address;
   char name[MAX_NAME_LENGTH];
 };

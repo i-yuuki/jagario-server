@@ -42,7 +42,7 @@ struct PacketServerAddPlayer{
   unsigned int playerId;
   float posX;
   float posY;
-  float size;
+  int size;
   char name[MAX_NAME_LENGTH];
 };
 
@@ -56,5 +56,5 @@ struct PacketServerUpdatePlayer{
   unsigned int playerId;
   float posX;
   float posY;
-  float size;
+  int size;
 };
