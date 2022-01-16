@@ -87,7 +87,28 @@ void GameServer::tick(){
         broadcast(packetRemovePlayer);
       }
         break;
+      case PacketType::C_DIRECTION:
+      {
+        PacketClientDirection& packet = *reinterpret_cast<PacketClientDirection*>(packetBuffer);
+        if(auto* player = getPlayer(packet.playerId)){
+          player->direction = packet.direction;
+        }
+      }
+        break;
     }
+  }
+
+  constexpr float speed = 5; // 仮
+  for(auto it = players.begin();it != players.end();it ++){
+    auto& player = it->second;
+    player.posX += std::sin(player.direction) * speed;
+    player.posY += std::cos(player.direction) * speed;
+
+    PacketServerUpdatePlayer packet;
+    packet.playerId = it->first;
+    packet.posX = player.posX;
+    packet.posY = player.posY;
+    broadcast(packet);
   }
 }
 
@@ -103,4 +124,9 @@ unsigned int GameServer::generatePlayerId(){
     unsigned int id = rand();
     if(players.find(id) == players.end()) return id;
   }
+}
+
+Player* GameServer::getPlayer(unsigned int playerId){
+  auto it = players.find(playerId);
+  return it == players.end() ? nullptr : &it->second;
 }

@@ -22,6 +22,7 @@ private:
   int maxPlayers = 100;
   std::unordered_map<unsigned int, Player> players;
   unsigned int generatePlayerId();
+  Player* getPlayer(unsigned int playerId);
   template<class T>
   void broadcast(const T& packet){
     for(auto it = players.begin();it != players.end();it ++){
