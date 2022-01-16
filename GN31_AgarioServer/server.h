@@ -14,5 +14,6 @@ private:
 private:
   SOCKET socket = NULL;
   unsigned short port = 20250;
+  char packetBuffer[65507];
   int maxPlayers = 100;
 };
