@@ -22,4 +22,10 @@ private:
   int maxPlayers = 100;
   std::unordered_map<unsigned int, Player> players;
   unsigned int generatePlayerId();
+  template<class T>
+  void broadcast(const T& packet){
+    for(auto it = players.begin();it != players.end();it ++){
+      sendto(socket, reinterpret_cast<const char*>(&packet), sizeof(packet), 0, reinterpret_cast<sockaddr*>(&it->second.address), sizeof(sockaddr));
+    }
+  }
 };

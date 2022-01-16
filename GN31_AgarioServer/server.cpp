@@ -58,12 +58,18 @@ void GameServer::tick(){
         for(auto it = players.begin();it != players.end();it ++){
           PacketServerAddPlayer packetAddPlayer;
           packetAddPlayer.playerId = it->first;
-          packetAddPlayer.posX = player.posX;
-          packetAddPlayer.posY = player.posY;
-          packetAddPlayer.size = player.size;
-          strcpy_s(packetAddPlayer.name, sizeof(packetAddPlayer.name), player.name);
+          packetAddPlayer.posX = it->second.posX;
+          packetAddPlayer.posY = it->second.posY;
+          packetAddPlayer.size = it->second.size;
+          strcpy_s(packetAddPlayer.name, sizeof(packetAddPlayer.name), it->second.name);
           
-          sendto(socket, reinterpret_cast<char*>(&packetAddPlayer), sizeof(packetAddPlayer), 0, reinterpret_cast<sockaddr*>(&senderAddr), senderAddrLen);
+          if(it->first == playerId){
+            // 参加者を全プレイヤーに伝える
+            broadcast(packetAddPlayer);
+          }else{
+            // 全プレイヤーを参加者に伝える
+            sendto(socket, reinterpret_cast<char*>(&packetAddPlayer), sizeof(packetAddPlayer), 0, reinterpret_cast<sockaddr*>(&senderAddr), senderAddrLen);
+          }
         }
 
         PacketServerJoin response{};
