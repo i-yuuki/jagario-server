@@ -6,9 +6,10 @@ constexpr int PROTOCOL_VERSION = 1;
 // 想定される送信元を名前の最初につけてるよ
 // (クライアント→サーバー = C_HOGE)
 enum class PacketType : short{
-  C_JOIN,  // 参加リクエスト
-  C_LEAVE, // 退出
-  S_JOIN,  // 参加承認
+  C_JOIN,        // 参加リクエスト
+  C_LEAVE,       // 退出
+  S_JOIN,        // 参加承認
+  S_ADD_PLAYER,  // プレイヤーを追加
 };
 
 struct PacketClientJoin{
@@ -25,4 +26,13 @@ struct PacketClientLeave{
 struct PacketServerJoin{
   PacketType type = PacketType::S_JOIN;
   unsigned int playerId;
+};
+
+struct PacketServerAddPlayer{
+  PacketType type = PacketType::S_ADD_PLAYER;
+  unsigned int playerId;
+  float posX;
+  float posY;
+  float size;
+  char name[MAX_NAME_LENGTH];
 };

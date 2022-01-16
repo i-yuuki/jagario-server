@@ -52,7 +52,18 @@ void GameServer::tick(){
         player.address = senderAddr;
         strcpy_s(player.name, sizeof(player.name), packet.name);
         players.insert({playerId, player});
-        
+
+        for(auto it = players.begin();it != players.end();it ++){
+          PacketServerAddPlayer packetAddPlayer;
+          packetAddPlayer.playerId = it->first;
+          packetAddPlayer.posX = player.posX;
+          packetAddPlayer.posY = player.posY;
+          packetAddPlayer.size = player.size;
+          strcpy_s(packetAddPlayer.name, sizeof(packetAddPlayer.name), player.name);
+          
+          sendto(socket, reinterpret_cast<char*>(&packetAddPlayer), sizeof(packetAddPlayer), 0, reinterpret_cast<sockaddr*>(&senderAddr), senderAddrLen);
+        }
+
         PacketServerJoin response{};
         response.playerId = playerId;
         sendto(socket, reinterpret_cast<char*>(&response), sizeof(response), 0, reinterpret_cast<sockaddr*>(&senderAddr), senderAddrLen);
