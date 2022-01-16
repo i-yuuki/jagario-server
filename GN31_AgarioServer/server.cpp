@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "server.h"
 
 #include <random>
@@ -47,10 +48,11 @@ void GameServer::tick(){
         PacketClientJoin& packet = *reinterpret_cast<PacketClientJoin*>(packetBuffer);
 
         unsigned int playerId = generatePlayerId();
+        std::mt19937 rand;
+        std::uniform_real_distribution<float> dist(initialPlayerSize / 2.0f, fieldSize - initialPlayerSize);
         Player player{};
-        // TODO 位置とか
-        player.posX = rand() % 200;
-        player.posY = rand() % 200;
+        player.posX = dist(rand);
+        player.posY = dist(rand);
         player.size = initialPlayerSize;
         player.address = senderAddr;
         strcpy_s(player.name, sizeof(player.name), packet.name);
@@ -104,6 +106,9 @@ void GameServer::tick(){
     auto& player = it->second;
     player.posX += std::sin(player.direction) * speed;
     player.posY += std::cos(player.direction) * speed;
+
+    player.posX = std::min(std::max(player.posX, player.size / 2.0f), fieldSize - player.size);
+    player.posY = std::min(std::max(player.posY, player.size / 2.0f), fieldSize - player.size);
 
     PacketServerUpdatePlayer packet;
     packet.playerId = it->first;

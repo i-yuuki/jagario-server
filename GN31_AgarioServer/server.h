@@ -21,6 +21,7 @@ private:
   char packetBuffer[65507];
   int maxPlayers = 100;
   int initialPlayerSize = 10;
+  float fieldSize = 2000;
   std::unordered_map<unsigned int, Player> players;
   unsigned int generatePlayerId();
   Player* getPlayer(unsigned int playerId);
