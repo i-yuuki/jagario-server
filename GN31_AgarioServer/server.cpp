@@ -80,8 +80,11 @@ void GameServer::tick(){
       case PacketType::C_LEAVE:
       {
         PacketClientLeave& packet = *reinterpret_cast<PacketClientLeave*>(packetBuffer);
-        // TODO プレイヤーに通知
         players.erase(packet.playerId);
+
+        PacketServerRemovePlayer packetRemovePlayer;
+        packetRemovePlayer.playerId = packet.playerId;
+        broadcast(packetRemovePlayer);
       }
         break;
     }
