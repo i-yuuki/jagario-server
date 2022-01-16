@@ -51,6 +51,7 @@ void GameServer::tick(){
         // TODO 位置とか
         player.posX = rand() % 200;
         player.posY = rand() % 200;
+        player.size = initialPlayerSize;
         player.address = senderAddr;
         strcpy_s(player.name, sizeof(player.name), packet.name);
         players.insert({playerId, player});
@@ -108,6 +109,7 @@ void GameServer::tick(){
     packet.playerId = it->first;
     packet.posX = player.posX;
     packet.posY = player.posY;
+    packet.size = player.size;
     broadcast(packet);
   }
 }
