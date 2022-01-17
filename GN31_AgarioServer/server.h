@@ -24,6 +24,7 @@ private:
   int initialPlayerSize = 10;
   float fieldSize = 2000;
   int pelletCount = 100;
+  float pelletSize = 10;
   std::unordered_map<unsigned int, Player> players;
   std::unordered_map<unsigned int, Pellet> pellets;
   unsigned int generatePlayerId();

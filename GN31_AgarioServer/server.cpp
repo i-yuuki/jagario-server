@@ -114,11 +114,29 @@ void GameServer::tick(){
   constexpr float speed = 5; // 仮
   for(auto it = players.begin();it != players.end();it ++){
     auto& player = it->second;
+    float playerSizeHalf = player.size / 2.0f;
     player.posX += std::sin(player.direction) * speed;
     player.posY += std::cos(player.direction) * speed;
 
     player.posX = std::min(std::max(player.posX, player.size / 2.0f), fieldSize - player.size);
     player.posY = std::min(std::max(player.posY, player.size / 2.0f), fieldSize - player.size);
+
+    for(auto it1 = pellets.begin();it1 != pellets.end();){
+      unsigned int pelletId = it1->first;
+      auto& pellet = it1->second;
+      float distX = player.posX - pellet.posX;
+      float distY = player.posY - pellet.posY;
+      float distSq = distX * distX + distY * distY;
+      if(distSq < (playerSizeHalf * playerSizeHalf + pelletSize * pelletSize)){
+        it1 = pellets.erase(it1);
+        player.size ++;
+        PacketServerRemovePellet packet{};
+        packet.pelletId = pelletId;
+        broadcast(packet);
+      }else{
+        it1 ++;
+      }
+    }
 
     PacketServerUpdatePlayer packet;
     packet.playerId = it->first;
@@ -127,6 +145,8 @@ void GameServer::tick(){
     packet.size = player.size;
     broadcast(packet);
   }
+
+  populatePellets();
 }
 
 void GameServer::uninit(){
