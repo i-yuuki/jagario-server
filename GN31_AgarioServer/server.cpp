@@ -116,7 +116,7 @@ void GameServer::tick(){
     auto& player = it->second;
     float playerSizeHalf = player.size / 2.0f;
     float speed = 10;
-    speed = std::max(2.0f, speed - (player.size - initialPlayerSize) / 30.0f);
+    speed = std::max(3.0f, speed - (player.size - initialPlayerSize) / 30.0f);
     if(player.boost && player.size > initialPlayerSize){
       player.size = std::max(initialPlayerSize, player.size - 2);
       speed *= 4;
