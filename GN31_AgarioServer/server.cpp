@@ -195,6 +195,10 @@ unsigned int GameServer::generatePlayerId(){
   }
 }
 
+const std::unordered_map<unsigned int, Player>& GameServer::getPlayers(){
+  return players;
+}
+
 Player* GameServer::getPlayer(unsigned int playerId){
   auto it = players.find(playerId);
   return it == players.end() ? nullptr : &it->second;

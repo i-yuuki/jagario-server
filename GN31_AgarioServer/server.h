@@ -14,9 +14,9 @@ public:
   void init();
   void tick();
   void uninit();
+  const std::unordered_map<unsigned int, Player>& getPlayers();
 private:
   GameServer();
-private:
   SOCKET socket = NULL;
   unsigned short port = 20250;
   char packetBuffer[65507];
