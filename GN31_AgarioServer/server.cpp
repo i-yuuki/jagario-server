@@ -118,8 +118,8 @@ void GameServer::tick(){
     player.posX += std::sin(player.direction) * speed;
     player.posY += std::cos(player.direction) * speed;
 
-    player.posX = std::min(std::max(player.posX, player.size / 2.0f), fieldSize - player.size);
-    player.posY = std::min(std::max(player.posY, player.size / 2.0f), fieldSize - player.size);
+    player.posX = std::min(std::max(player.posX, playerSizeHalf), fieldSize - playerSizeHalf);
+    player.posY = std::min(std::max(player.posY, playerSizeHalf), fieldSize - playerSizeHalf);
 
     for(auto it1 = pellets.begin();it1 != pellets.end();){
       unsigned int pelletId = it1->first;
