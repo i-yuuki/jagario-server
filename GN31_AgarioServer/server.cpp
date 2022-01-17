@@ -112,7 +112,7 @@ void GameServer::tick(){
   }
 
   constexpr float speed = 5; // 仮
-  for(auto it = players.begin();it != players.end();it ++){
+  for(auto it = players.begin();it != players.end();){
     auto& player = it->second;
     float playerSizeHalf = player.size / 2.0f;
     player.posX += std::sin(player.direction) * speed;
@@ -138,12 +138,38 @@ void GameServer::tick(){
       }
     }
 
+    bool die = false;
+    for(auto it1 = players.begin();it1 != players.end();it1 ++){
+      auto& p1 = it1->second;
+      float p1SizeHalf = p1.size / 2;
+      float distX = player.posX - p1.posX;
+      float distY = player.posY - p1.posY;
+      float distSq = distX * distX + distY * distY;
+      if(distSq < (playerSizeHalf * playerSizeHalf + p1SizeHalf * p1SizeHalf)){
+        die = p1.size >= player.size + 15;
+        if(die){
+          p1.size += player.size / 2;
+          break;
+        }
+      }
+    }
+
+    if(die){
+      PacketServerRemovePlayer packet;
+      packet.playerId = it->first;
+      broadcast(packet);
+      it = players.erase(it);
+      continue;
+    }
+
     PacketServerUpdatePlayer packet;
     packet.playerId = it->first;
     packet.posX = player.posX;
     packet.posY = player.posY;
     packet.size = player.size;
     broadcast(packet);
+
+    it ++;
   }
 
   populatePellets();
