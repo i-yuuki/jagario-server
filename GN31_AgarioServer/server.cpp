@@ -53,9 +53,8 @@ void GameServer::tick(){
         std::mt19937 rand(std::random_device{}());
         std::uniform_real_distribution<float> dist(initialPlayerSize / 2.0f, fieldSize - initialPlayerSize);
         Player player{};
-        player.posX = dist(rand);
-        player.posY = dist(rand);
         player.size = initialPlayerSize;
+        setRandomSafePosition(player);
         player.address = senderAddr;
         strcpy_s(player.name, sizeof(player.name), packet.name);
         players.insert({playerId, player});
@@ -202,6 +201,27 @@ const std::unordered_map<unsigned int, Player>& GameServer::getPlayers(){
 Player* GameServer::getPlayer(unsigned int playerId){
   auto it = players.find(playerId);
   return it == players.end() ? nullptr : &it->second;
+}
+
+void GameServer::setRandomSafePosition(Player& player){
+  std::mt19937 rand(std::random_device{}());
+  std::uniform_real_distribution<float> dist(initialPlayerSize / 2.0f, fieldSize - initialPlayerSize);
+  float playerSizeHalf = player.size / 2;
+  for(int i = 0;i < 100;i ++){
+    player.posX = dist(rand);
+    player.posY = dist(rand);
+    for(auto it = players.begin();it != players.end();it ++){
+      auto& p1 = it->second;
+      float p1SizeHalf = p1.size / 2;
+      float distX = player.posX - p1.posX;
+      float distY = player.posY - p1.posY;
+      float distSq = distX * distX + distY * distY;
+      if(distSq < (playerSizeHalf * playerSizeHalf + p1SizeHalf * p1SizeHalf + 100 * 100)){
+        continue;
+      }
+      return;
+    }
+  }
 }
 
 void GameServer::addPellet(){

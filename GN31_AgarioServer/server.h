@@ -29,6 +29,8 @@ private:
   std::unordered_map<unsigned int, Pellet> pellets;
   unsigned int generatePlayerId();
   Player* getPlayer(unsigned int playerId);
+  // できるだけ安全なランダム位置に移動
+  void setRandomSafePosition(Player& player);
   void addPellet();
   void populatePellets();
   template<class T>
