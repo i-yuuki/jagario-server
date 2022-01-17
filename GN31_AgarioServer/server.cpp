@@ -50,7 +50,7 @@ void GameServer::tick(){
         PacketClientJoin& packet = *reinterpret_cast<PacketClientJoin*>(packetBuffer);
 
         unsigned int playerId = generatePlayerId();
-        std::mt19937 rand;
+        std::mt19937 rand(std::random_device{}());
         std::uniform_real_distribution<float> dist(initialPlayerSize / 2.0f, fieldSize - initialPlayerSize);
         Player player{};
         player.posX = dist(rand);
@@ -136,7 +136,7 @@ void GameServer::uninit(){
 }
 
 unsigned int GameServer::generatePlayerId(){
-  std::mt19937 rand;
+  std::mt19937 rand(std::random_device{}());
   while(true){
     unsigned int id = rand();
     if(players.find(id) == players.end()) return id;
@@ -150,7 +150,7 @@ Player* GameServer::getPlayer(unsigned int playerId){
 
 void GameServer::addPellet(){
   unsigned int id;
-  std::mt19937 rand;
+  std::mt19937 rand(std::random_device{}());
   while(true){
     id = rand();
     if(pellets.find(id) == pellets.end()) break;
