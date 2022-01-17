@@ -1,6 +1,7 @@
 #define NOMINMAX
 
 #include <algorithm>
+#include <chrono>
 #include <string>
 #include <WinSock2.h>
 
@@ -75,16 +76,24 @@ int APIENTRY WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int cmdShow){
   ShowWindow(window, SW_NORMAL);
   UpdateWindow(window);
 
+  using clock = std::chrono::high_resolution_clock;
+  clock::time_point timeNextTick = clock::now();
+
   MSG msg{};
   while(msg.message != WM_QUIT){
     if(PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE)){
       TranslateMessage(&msg);
       DispatchMessageW(&msg);
     }else{
-      GameServer::Instance.tick();
-      draw();
-      InvalidateRect(window, NULL, false);
-      Sleep(50); // 適当
+      auto now = clock::now();
+      if(now >= timeNextTick){
+        GameServer::Instance.tick();
+        draw();
+        InvalidateRect(window, NULL, false);
+        timeNextTick += std::chrono::milliseconds(50);
+      }else{
+        Sleep(std::chrono::duration_cast<std::chrono::milliseconds>(timeNextTick - now).count());
+      }
     }
   }
 
