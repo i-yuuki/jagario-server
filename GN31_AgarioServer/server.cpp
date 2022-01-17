@@ -115,10 +115,11 @@ void GameServer::tick(){
   for(auto it = players.begin();it != players.end();){
     auto& player = it->second;
     float playerSizeHalf = player.size / 2.0f;
-    float speed = 5;
+    float speed = 10;
+    speed = std::max(2.0f, speed - (player.size - initialPlayerSize) / 30.0f);
     if(player.boost && player.size > initialPlayerSize){
       player.size = std::max(initialPlayerSize, player.size - 2);
-      speed *= 3;
+      speed *= 4;
     }
     player.posX += std::sin(player.direction) * speed;
     player.posY += std::cos(player.direction) * speed;
