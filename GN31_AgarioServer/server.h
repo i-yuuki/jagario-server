@@ -6,6 +6,7 @@
 #include <WinSock2.h>
 
 #include "player.h"
+#include "pellet.h"
 
 class GameServer{
 public:
@@ -22,9 +23,13 @@ private:
   int maxPlayers = 100;
   int initialPlayerSize = 10;
   float fieldSize = 2000;
+  int pelletCount = 100;
   std::unordered_map<unsigned int, Player> players;
+  std::unordered_map<unsigned int, Pellet> pellets;
   unsigned int generatePlayerId();
   Player* getPlayer(unsigned int playerId);
+  void addPellet();
+  void populatePellets();
   template<class T>
   void broadcast(const T& packet){
     for(auto it = players.begin();it != players.end();it ++){

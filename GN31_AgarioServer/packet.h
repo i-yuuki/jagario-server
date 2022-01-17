@@ -13,6 +13,8 @@ enum class PacketType : short{
   S_ADD_PLAYER,    // プレイヤーを追加
   S_REMOVE_PLAYER, // プレイヤーを削除 (死or退出)
   S_UPDATE_PLAYER, // プレイヤーの状態更新
+  S_ADD_PELLET,    // ペレット (食うやつ) を追加
+  S_REMOVE_PELLET, // ペレットを削除 (食われた)
 };
 
 struct PacketClientJoin{
@@ -57,4 +59,16 @@ struct PacketServerUpdatePlayer{
   float posX;
   float posY;
   int size;
+};
+
+struct PacketServerAddPellet{
+  PacketType type = PacketType::S_ADD_PELLET;
+  unsigned int pelletId;
+  float posX;
+  float posY;
+};
+
+struct PacketServerRemovePellet{
+  PacketType type = PacketType::S_REMOVE_PELLET;
+  unsigned int pelletId;
 };

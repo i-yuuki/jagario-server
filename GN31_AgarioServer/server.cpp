@@ -12,6 +12,8 @@ GameServer::GameServer(){
 }
 
 void GameServer::init(){
+  populatePellets();
+
   WSADATA wd;
 	WORD winSockVersion = MAKEWORD(2, 0);
   if(WSAStartup(winSockVersion, &wd)) throw std::runtime_error("WinSock failed to initialize: " + getLastWinSockErrorMessage());
@@ -75,6 +77,14 @@ void GameServer::tick(){
           }
         }
 
+        for(auto it = pellets.begin();it != pellets.end();it ++){
+          PacketServerAddPellet packet{};
+          packet.pelletId = it->first;
+          packet.posX = it->second.posX;
+          packet.posY = it->second.posY;
+          sendto(socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0, reinterpret_cast<sockaddr*>(&senderAddr), senderAddrLen);
+        }
+
         PacketServerJoin response{};
         response.playerId = playerId;
         sendto(socket, reinterpret_cast<char*>(&response), sizeof(response), 0, reinterpret_cast<sockaddr*>(&senderAddr), senderAddrLen);
@@ -136,4 +146,31 @@ unsigned int GameServer::generatePlayerId(){
 Player* GameServer::getPlayer(unsigned int playerId){
   auto it = players.find(playerId);
   return it == players.end() ? nullptr : &it->second;
+}
+
+void GameServer::addPellet(){
+  unsigned int id;
+  std::mt19937 rand;
+  while(true){
+    id = rand();
+    if(pellets.find(id) == pellets.end()) break;
+  }
+
+  std::uniform_real_distribution<float> dist(0, fieldSize);
+  Pellet pellet{};
+  pellet.posX = dist(rand);
+  pellet.posY = dist(rand);
+  pellets.insert({id, pellet});
+
+  PacketServerAddPellet packet{};
+  packet.pelletId = id;
+  packet.posX = pellet.posX;
+  packet.posY = pellet.posY;
+  broadcast(packet);
+}
+
+void GameServer::populatePellets(){
+  while(pellets.size() < pelletCount){
+    addPellet();
+  }
 }
