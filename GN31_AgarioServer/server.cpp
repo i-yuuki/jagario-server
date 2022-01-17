@@ -146,7 +146,7 @@ void GameServer::tick(){
     bool die = false;
     for(auto it1 = players.begin();it1 != players.end();it1 ++){
       auto& p1 = it1->second;
-      float p1SizeHalf = p1.size / 2;
+      float p1SizeHalf = p1.size / 2.0f;
       float distX = player.posX - p1.posX;
       float distY = player.posY - p1.posY;
       float distSq = distX * distX + distY * distY;
@@ -206,13 +206,13 @@ Player* GameServer::getPlayer(unsigned int playerId){
 void GameServer::setRandomSafePosition(Player& player){
   std::mt19937 rand(std::random_device{}());
   std::uniform_real_distribution<float> dist(initialPlayerSize / 2.0f, fieldSize - initialPlayerSize);
-  float playerSizeHalf = player.size / 2;
+  float playerSizeHalf = player.size / 2.0f;
   for(int i = 0;i < 100;i ++){
     player.posX = dist(rand);
     player.posY = dist(rand);
     for(auto it = players.begin();it != players.end();it ++){
       auto& p1 = it->second;
-      float p1SizeHalf = p1.size / 2;
+      float p1SizeHalf = p1.size / 2.0f;
       float distX = player.posX - p1.posX;
       float distY = player.posY - p1.posY;
       float distSq = distX * distX + distY * distY;
