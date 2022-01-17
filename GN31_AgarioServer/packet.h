@@ -8,7 +8,7 @@ constexpr int PROTOCOL_VERSION = 1;
 enum class PacketType : short{
   C_JOIN,          // 参加リクエスト
   C_LEAVE,         // 退出
-  C_DIRECTION,     // 方向
+  C_UPDATE,        // 自分の状態更新
   S_JOIN,          // 参加承認
   S_ADD_PLAYER,    // プレイヤーを追加
   S_REMOVE_PLAYER, // プレイヤーを削除 (死or退出)
@@ -28,10 +28,11 @@ struct PacketClientLeave{
   unsigned int playerId;
 };
 
-struct PacketClientDirection{
-  PacketType type = PacketType::C_DIRECTION;
+struct PacketClientUpdate{
+  PacketType type = PacketType::C_UPDATE;
   unsigned int playerId;
   float direction;
+  bool boost;
 };
 
 struct PacketServerJoin{

@@ -100,21 +100,26 @@ void GameServer::tick(){
         broadcast(packetRemovePlayer);
       }
         break;
-      case PacketType::C_DIRECTION:
+      case PacketType::C_UPDATE:
       {
-        PacketClientDirection& packet = *reinterpret_cast<PacketClientDirection*>(packetBuffer);
+        PacketClientUpdate& packet = *reinterpret_cast<PacketClientUpdate*>(packetBuffer);
         if(auto* player = getPlayer(packet.playerId)){
           player->direction = packet.direction;
+          player->boost = packet.boost;
         }
       }
         break;
     }
   }
 
-  constexpr float speed = 5; // 仮
   for(auto it = players.begin();it != players.end();){
     auto& player = it->second;
     float playerSizeHalf = player.size / 2.0f;
+    float speed = 5;
+    if(player.boost && player.size > initialPlayerSize){
+      player.size = std::max(initialPlayerSize, player.size - 2);
+      speed *= 3;
+    }
     player.posX += std::sin(player.direction) * speed;
     player.posY += std::cos(player.direction) * speed;
 
